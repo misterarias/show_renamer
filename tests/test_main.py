@@ -1,12 +1,15 @@
 import pytest
 
-from main import rename_list, InvalidEpisodeCountError, extract_season_number
+from main import rename_list, InvalidEpisodeCountError, extract_season_number, InvalidSeasonFormatError
 
 
 def test_extract_season_number():
     assert extract_season_number("S1") == 1
     assert extract_season_number("S01") == 1
     assert extract_season_number("Season 1") == 1
+
+    with pytest.raises(InvalidSeasonFormatError):
+        extract_season_number("First season")
 
 
 def test_rename_list(tmpdir):
