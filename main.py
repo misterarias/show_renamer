@@ -1,3 +1,5 @@
+import os
+import glob
 import re
 from typing import List, Tuple
 
@@ -10,8 +12,19 @@ class InvalidSeasonFormatError(Exception):
     pass
 
 
+class InvalidInputPathError(Exception):
+    pass
+
+
 def main():
     pass
+
+
+def get_file_list(input_path):
+    if not input_path or not os.path.isdir(input_path):
+        raise InvalidInputPathError(input_path)
+
+    return sorted([f for f in glob.glob(f"{input_path}/*") if os.path.isfile(f)])
 
 
 def extract_season_number(season: str) -> int:
