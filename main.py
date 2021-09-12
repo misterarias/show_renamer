@@ -15,7 +15,7 @@ def main():
 
 
 def extract_season_number(season: str) -> int:
-    number = re.search(r'.*(\d+).*', season)
+    number = re.search(r".*(\d+).*", season)
     print(number)
     if not number:
         raise InvalidSeasonFormatError()
@@ -35,11 +35,13 @@ def rename_list(file_list: list, season_definition: List[Tuple[str, int]]) -> li
     sequential_definitions = []
     for (season, episode_count) in season_definition:
         season_number = extract_season_number(season)
-        sequential_definitions.extend([f"S{season_number:02}E{i:02}" for i in range(1, episode_count + 1)])
+        sequential_definitions.extend(
+            [f"S{season_number:02}E{i:02}" for i in range(1, episode_count + 1)]
+        )
 
     final_names = []
     for index, name in enumerate(file_list):
-        name, *rest = name.split('.')
+        name, *rest = name.split(".")
         final_name = sequential_definitions[index]
         if rest:
             final_name = f"{final_name}.{rest[-1]}"

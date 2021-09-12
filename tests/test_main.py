@@ -1,6 +1,11 @@
 import pytest
 
-from main import rename_list, InvalidEpisodeCountError, extract_season_number, InvalidSeasonFormatError
+from main import (
+    rename_list,
+    InvalidEpisodeCountError,
+    extract_season_number,
+    InvalidSeasonFormatError,
+)
 
 
 def test_extract_season_number():
@@ -32,23 +37,29 @@ def test_rename_list(tmpdir):
         "S01E02",
         "S01E03",
     ]
-    assert rename_list([
-        "Dragon_Ball_1024x768_1.mkv",
-        "Dragon_Ball_1024x768_2.mkv",
-        "Dragon_Ball_1024x768_3.mkv",
-    ], [("S1", 3)]) == [
+    assert rename_list(
+        [
+            "Dragon_Ball_1024x768_1.mkv",
+            "Dragon_Ball_1024x768_2.mkv",
+            "Dragon_Ball_1024x768_3.mkv",
+        ],
+        [("S1", 3)],
+    ) == [
         "S01E01.mkv",
         "S01E02.mkv",
         "S01E03.mkv",
     ]
 
-    assert rename_list([
-        "Dragon_Ball_1024x768_1.mkv",
-        "Dragon_Ball_1024x768_2.mkv",
-        "Dragon_Ball_1024x768_3.mkv",
-        "Dragon_Ball_1024x768_4.mkv",
-        "Dragon_Ball_1024x768_5.mkv",
-    ], [("S1", 3), ("S2", 2)]) == [
+    assert rename_list(
+        [
+            "Dragon_Ball_1024x768_1.mkv",
+            "Dragon_Ball_1024x768_2.mkv",
+            "Dragon_Ball_1024x768_3.mkv",
+            "Dragon_Ball_1024x768_4.mkv",
+            "Dragon_Ball_1024x768_5.mkv",
+        ],
+        [("S1", 3), ("S2", 2)],
+    ) == [
         "S01E01.mkv",
         "S01E02.mkv",
         "S01E03.mkv",
