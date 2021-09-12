@@ -3,7 +3,8 @@ def main():
 
 
 def rename_list(file_list: list, season_definition: dict) -> list:
-    pass
+    if season_definition is None:
+        return file_list
 
 
 if __name__ == '__main__':
