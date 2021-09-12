@@ -26,3 +26,12 @@ def test_rename_list(tmpdir):
         "S01E02",
         "S01E03",
     ]
+    assert rename_list([
+        "Dragon_Ball_1024x768_1.mkv",
+        "Dragon_Ball_1024x768_2.mkv",
+        "Dragon_Ball_1024x768_3.mkv",
+    ], [("S1", 3)]) == [
+        "S01E01.mkv",
+        "S01E02.mkv",
+        "S01E03.mkv",
+    ]
