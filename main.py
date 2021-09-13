@@ -1,7 +1,15 @@
 import os
+import json
 import glob
 import re
+import sys
+
+from json.decoder import JSONDecodeError
 from typing import List, Tuple
+
+
+class InvalidDescriptionFormat(Exception):
+    pass
 
 
 class InvalidEpisodeCountError(Exception):
@@ -16,8 +24,30 @@ class InvalidInputPathError(Exception):
     pass
 
 
-def main():
-    pass
+def get_description_from_file(input_path: str) -> List[Tuple[str, int]]:
+    if not input_path or not os.path.isfile(input_path):
+        raise InvalidInputPathError(input_path)
+
+    try:
+        with open(input_path) as fd:
+            description_data = json.load(fd)
+            return [
+                (season["name"], len(season["episodes"]))
+                for season in description_data["seasons"]
+            ]
+    except (AttributeError, JSONDecodeError, TypeError, KeyError) as error:
+        raise InvalidDescriptionFormat(error)
+
+
+def main(args: list):
+    file_list = get_file_list(args[0])
+    description_data = get_description_from_file(args[1])
+    new_list = rename_list(file_list, description_data)
+
+    for index in range(0, len(file_list)):
+        os.renames(file_list[index], new_list[index])
+
+    return 0
 
 
 def get_file_list(input_path):
@@ -29,7 +59,6 @@ def get_file_list(input_path):
 
 def extract_season_number(season: str) -> int:
     number = re.search(r".*(\d+).*", season)
-    print(number)
     if not number:
         raise InvalidSeasonFormatError()
 
@@ -53,9 +82,10 @@ def rename_list(file_list: list, season_definition: List[Tuple[str, int]]) -> li
         )
 
     final_names = []
-    for index, name in enumerate(file_list):
-        name, *rest = name.split(".")
-        final_name = sequential_definitions[index]
+    for index, file_path in enumerate(file_list):
+        path = os.path.dirname(file_path)
+        name, *rest = os.path.basename(file_path).split(".")
+        final_name = os.path.join(path, sequential_definitions[index])
         if rest:
             final_name = f"{final_name}.{rest[-1]}"
         final_names.append(final_name)
@@ -63,5 +93,5 @@ def rename_list(file_list: list, season_definition: List[Tuple[str, int]]) -> li
     return final_names
 
 
-if __name__ == "__main__":
-    main()
+if __name__ == "__main__":  # pragma no cover
+    sys.exit(main(sys.argv[1:]))
