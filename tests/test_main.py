@@ -49,7 +49,17 @@ def test_main(tmpdir, show1_descriptor):
     description_file = tmpdir.mkdir("desc").join("description.json")
     description_file.write(show1_descriptor)
 
-    assert main([show1.strpath, description_file.strpath]) == 0
+    assert (
+        main(f"-f {show1.strpath} -d {description_file.strpath} --dry-run".split()) == 0
+    )
+    assert sorted(list(glob.glob(f"{show1.strpath}/*.mkv"))) == [
+        f"{show1.strpath}/show1_01.mkv",
+        f"{show1.strpath}/show1_02.mkv",
+        f"{show1.strpath}/show1_03.mkv",
+        f"{show1.strpath}/show1_04.mkv",
+    ]
+
+    assert main(f"-f {show1.strpath} -d {description_file.strpath}".split()) == 0
     assert sorted(list(glob.glob(f"{show1.strpath}/*.mkv"))) == [
         f"{show1.strpath}/S01E01.mkv",
         f"{show1.strpath}/S01E02.mkv",

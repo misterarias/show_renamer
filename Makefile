@@ -4,7 +4,7 @@ black:	## blackify code
 
 .PHONY: test
 test:  ## run tests quickly with the default Python
-	py.test
+	py.test -v
 
 .PHONY: test-coverage
 test-coverage:  ## check code coverage

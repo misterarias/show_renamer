@@ -1,8 +1,10 @@
+#!/usr/bin/env python
 import os
 import json
 import glob
 import re
 import sys
+import argparse
 
 from json.decoder import JSONDecodeError
 from typing import List, Tuple
@@ -37,17 +39,6 @@ def get_description_from_file(input_path: str) -> List[Tuple[str, int]]:
             ]
     except (AttributeError, JSONDecodeError, TypeError, KeyError) as error:
         raise InvalidDescriptionFormat(error)
-
-
-def main(args: list):
-    file_list = get_file_list(args[0])
-    description_data = get_description_from_file(args[1])
-    new_list = rename_list(file_list, description_data)
-
-    for index in range(0, len(file_list)):
-        os.renames(file_list[index], new_list[index])
-
-    return 0
 
 
 def get_file_list(input_path):
@@ -91,6 +82,50 @@ def rename_list(file_list: list, season_definition: List[Tuple[str, int]]) -> li
         final_names.append(final_name)
 
     return final_names
+
+
+def parse_args(args: list) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        prog="renamer",
+        description="""
+Renames a list of files according to a season-to-episode descriptor file.
+""",
+    )
+    parser.add_argument(
+        "-f", "--files_location", required=True, help="Path to input files to rename."
+    )
+    parser.add_argument(
+        "-d",
+        "--descriptor_location",
+        required=True,
+        help="Location of season description file.",
+    )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        default=False,
+        help="Do not rename, just verbosely inform od results",
+    )
+    parser.add_argument("-v", "--verbose", action="count", default=0)
+
+    return parser.parse_args(args)
+
+
+def main(args: list):
+    parsed_args = parse_args(args)
+    file_list = get_file_list(parsed_args.files_location)
+    description_data = get_description_from_file(parsed_args.descriptor_location)
+    new_list = rename_list(file_list, description_data)
+
+    for index in range(0, len(file_list)):
+        old_file = file_list[index]
+        new_file = new_list[index]
+        if parsed_args.dry_run:
+            print(f"{old_file} --> {new_file}")
+        else:
+            os.renames(old_file, new_file)
+
+    return 0
 
 
 if __name__ == "__main__":  # pragma no cover
