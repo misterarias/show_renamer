@@ -44,7 +44,7 @@ def test_get_description_from_file(tmpdir, show1_descriptor):
 
 def test_main(tmpdir, show1_descriptor):
     show1 = tmpdir.mkdir("show1")
-    [show1.join(f"show1_{i:02d}.mkv").write("") for i in range(1, 5)]
+    [show1.join(f"show1_{i:02d}.mkv").write("") for i in [2, 4, 3, 1]]
 
     description_file = tmpdir.mkdir("desc").join("description.json")
     description_file.write(show1_descriptor)
