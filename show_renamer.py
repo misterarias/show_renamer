@@ -1,8 +1,9 @@
+#!/usr/bin/env python
 import os
+import click
 import json
 import glob
 import re
-import sys
 
 from json.decoder import JSONDecodeError
 from typing import List, Tuple
@@ -39,15 +40,21 @@ def get_description_from_file(input_path: str) -> List[Tuple[str, int]]:
         raise InvalidDescriptionFormat(error)
 
 
-def main(args: list):
-    file_list = get_file_list(args[0])
-    description_data = get_description_from_file(args[1])
+@click.command()
+@click.option("-f", "--files-location", help="Location of files to rename.")
+@click.option("-d", "--descriptor-location", help="Location of season descriptor file.")
+def main(files_location, descriptor_location):
+    """Renames a list of files from sequential order to season/episode ordering."""
+    renamer(files_location, descriptor_location)
+
+
+def renamer(files_location, descriptor_location):
+    file_list = get_file_list(files_location)
+    description_data = get_description_from_file(descriptor_location)
     new_list = rename_list(file_list, description_data)
 
     for index in range(0, len(file_list)):
         os.renames(file_list[index], new_list[index])
-
-    return 0
 
 
 def get_file_list(input_path):
@@ -93,5 +100,5 @@ def rename_list(file_list: list, season_definition: List[Tuple[str, int]]) -> li
     return final_names
 
 
-if __name__ == "__main__":  # pragma no cover
-    sys.exit(main(sys.argv[1:]))
+if __name__ == "__main__":
+    main()

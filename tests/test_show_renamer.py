@@ -2,15 +2,14 @@ import json
 import glob
 import pytest
 
-from show_renamer import __version__
-from show_renamer.show_renamer import (
+from show_renamer import (
     rename_list,
     InvalidEpisodeCountError,
     extract_season_number,
     InvalidSeasonFormatError,
     get_file_list,
     InvalidInputPathError,
-    main,
+    renamer,
     get_description_from_file,
     InvalidDescriptionFormat,
 )
@@ -29,10 +28,6 @@ def show1_descriptor() -> str:
     )
 
 
-def test_version():
-    assert __version__ == '0.1.0'
-
-
 def test_get_description_from_file(tmpdir, show1_descriptor):
     with pytest.raises(InvalidInputPathError):
         get_description_from_file(tmpdir.strpath)
@@ -47,14 +42,14 @@ def test_get_description_from_file(tmpdir, show1_descriptor):
     assert get_description_from_file(description_file.strpath) == [("S1", 2), ("S2", 2)]
 
 
-def test_main(tmpdir, show1_descriptor):
+def test_renamer(tmpdir, show1_descriptor):
     show1 = tmpdir.mkdir("show1")
     [show1.join(f"show1_{i:02d}.mkv").write("") for i in [2, 4, 3, 1]]
 
     description_file = tmpdir.mkdir("desc").join("description.json")
     description_file.write(show1_descriptor)
 
-    assert main([show1.strpath, description_file.strpath]) == 0
+    renamer(show1.strpath, description_file.strpath)
     assert sorted(list(glob.glob(f"{show1.strpath}/*.mkv"))) == [
         f"{show1.strpath}/S01E01.mkv",
         f"{show1.strpath}/S01E02.mkv",

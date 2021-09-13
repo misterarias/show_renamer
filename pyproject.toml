@@ -1,16 +1,21 @@
 [tool.poetry]
-name = "renamer_thing"
+name = "show_renamer"
 version = "0.1.0"
 description = ""
-authors = ["Your Name <you@example.com>"]
+authors = ["Juan Arias <juan.arias.freire@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
+click = "^8.0.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"
 black = "^21.8b0"
+coverage = "^5.5"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+renamer = "show_renamer:main"
