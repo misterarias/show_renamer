@@ -15,7 +15,8 @@ class InvalidDescriptionFormat(Exception):
 
 
 class InvalidEpisodeCountError(Exception):
-    pass
+    def __init__(self, expected, actual):
+        super().__init__(f"Expected {expected} files, but got {actual}.")
 
 
 class InvalidSeasonFormatError(Exception):
@@ -41,11 +42,14 @@ def get_description_from_file(input_path: str) -> List[Tuple[str, int]]:
         raise InvalidDescriptionFormat(error)
 
 
-def get_file_list(input_path):
+def get_file_list(input_path: str, extension: str = None) -> List[str]:
     if not input_path or not os.path.isdir(input_path):
         raise InvalidInputPathError(input_path)
 
-    return sorted([f for f in glob.glob(f"{input_path}/*") if os.path.isfile(f)])
+    extension = f".{extension}" if extension else ""
+    return sorted(
+        [f for f in glob.glob(f"{input_path}/*{extension}") if os.path.isfile(f)]
+    )
 
 
 def extract_season_number(season: str) -> int:
@@ -63,7 +67,7 @@ def rename_list(file_list: list, season_definition: List[Tuple[str, int]]) -> li
     total_definitions = sum(episode_count for (_, episode_count) in season_definition)
     total_files = len(file_list)
     if total_definitions != total_files:
-        raise InvalidEpisodeCountError()
+        raise InvalidEpisodeCountError(total_files, total_definitions)
 
     sequential_definitions = []
     for (season, episode_count) in season_definition:
@@ -107,13 +111,19 @@ Renames a list of files according to a season-to-episode descriptor file.
         help="Do not rename, just verbosely inform od results",
     )
     parser.add_argument("-v", "--verbose", action="count", default=0)
+    parser.add_argument(
+        "-e",
+        "--files-extension",
+        default="mkv",
+        help="Extension of files to rename, to avois renaming clutter.",
+    )
 
     return parser.parse_args(args)
 
 
 def main(args: list):
     parsed_args = parse_args(args)
-    file_list = get_file_list(parsed_args.files_location)
+    file_list = get_file_list(parsed_args.files_location, parsed_args.files_extension)
     description_data = get_description_from_file(parsed_args.descriptor_location)
     new_list = rename_list(file_list, description_data)
 

@@ -88,6 +88,12 @@ def test_get_file_list(tmpdir):
     assert len(show2_files) == 4
     assert show2_files[0] == f"{show2.strpath}/show2_01.mkv"
 
+    # Add some tainted files
+    [show2.join(f"show2_{i:02d}.jpg").write("") for i in range(1, 5)]
+    show2_files = get_file_list(show2.strpath, "mkv")
+    assert len(show2_files) == 4
+    assert show2_files[0] == f"{show2.strpath}/show2_01.mkv"
+
 
 def test_extract_season_number():
     assert extract_season_number("S1") == 1

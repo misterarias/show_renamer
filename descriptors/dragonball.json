@@ -1,0 +1,11 @@
+{
+  "name": "Dragon Ball",
+  "seasons": [
+    {"name": "Season 1", "episode_count": 13},
+    {"name": "Season 2", "episode_count": 15},
+    {"name": "Season 3", "episode_count": 40},
+    {"name": "Season 4", "episode_count": 33},
+    {"name": "Season 5", "episode_count": 31},
+    {"name": "Season 6", "episode_count": 21}
+  ]
+}
