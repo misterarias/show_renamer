@@ -2,7 +2,8 @@ import json
 import glob
 import pytest
 
-from main import (
+from show_renamer import __version__
+from show_renamer.show_renamer import (
     rename_list,
     InvalidEpisodeCountError,
     extract_season_number,
@@ -26,6 +27,10 @@ def show1_descriptor() -> str:
             ],
         }
     )
+
+
+def test_version():
+    assert __version__ == '0.1.0'
 
 
 def test_get_description_from_file(tmpdir, show1_descriptor):
