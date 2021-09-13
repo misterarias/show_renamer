@@ -21,8 +21,8 @@ def show1_descriptor() -> str:
         {
             "name": "Show 1",
             "seasons": [
-                {"name": "S1", "episodes": ["1", "2"]},
-                {"name": "S2", "episodes": ["1", "2"]},
+                {"name": "S1", "episodes": ["1", "2"], "episode_count": 2},
+                {"name": "S2", "episodes": ["1", "2"], "episode_count": 2},
             ],
         }
     )

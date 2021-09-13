@@ -34,7 +34,7 @@ def get_description_from_file(input_path: str) -> List[Tuple[str, int]]:
         with open(input_path) as fd:
             description_data = json.load(fd)
             return [
-                (season["name"], len(season["episodes"]))
+                (season["name"], int(season["episode_count"]))
                 for season in description_data["seasons"]
             ]
     except (AttributeError, JSONDecodeError, TypeError, KeyError) as error:
